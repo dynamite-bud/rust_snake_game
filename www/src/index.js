@@ -44,7 +44,15 @@ init().then(() => {
 
   function drawSnake() {
     const snakeIdx = world.snake_head_idx();
-  }
+    const col = snakeIdx % worldWidth;
+    const row = Math.floor(snakeIdx / worldWidth);
+    ctx.beginPath();
 
+    // provide four positions a,b,c,d for the rectangle
+    ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+
+    ctx.stroke();
+  }
   drawWorld();
+  drawSnake();
 });
