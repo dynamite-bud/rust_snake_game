@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebAssembly Loading Practice</title>
+    <style>
+      .content-wrapper {
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content-wrapper">
+      <span>Here is the Canvas</span>
+      <canvas id="snake-canvas"></canvas>
+    </div>
+    <script src="./bootstrap.js"></script>
+  </body>
+</html>
+
+<!-- We can either create memory in JS and export it to WASM -->
+<!-- Or we can create memory in WASM and export it to JS -->
+<!-- 1 means -> 1 page of memory -- 1 Page has around 64KB of memory -->
+<!-- exporting memory 0 means the first memory created as we can have multiple memories -->
+
+<!-- 
+(module
+  (import "console" "log" (func $log))
+  (import "console" "error" (func $error))
+  (memory (import "js" "mem") 1)
+  (func $sum (param $a i32) (param $b i32) (result i32)
+    call $log
+    call $error
+    local.get $a
+    local.get $b
+    i32.add
+  )
+  (export "sum" (func $sum))
+) -->
