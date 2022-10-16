@@ -1,9 +1,12 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+// const WebpackShellPluginNext = require("webpack-shell-plugin-next");
 
+// eslint-disable-next-line no-undef
 module.exports = {
   entry: "./src/bootstrap.js",
   output: {
+    // eslint-disable-next-line no-undef
     path: path.resolve(__dirname, "public"),
     filename: "bootstrap.js",
   },
