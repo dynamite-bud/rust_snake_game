@@ -21,7 +21,7 @@ enum KEYS {
 
 init().then((wasm) => {
   const CELL_SIZE = 30;
-  const WORLD_WIDTH = 4;
+  const WORLD_WIDTH = 8;
 
   const snakeSpawnDirection = Direction.Right;
   const snakeSpawnIdx = rnd(WORLD_WIDTH * WORLD_WIDTH);
@@ -159,7 +159,7 @@ init().then((wasm) => {
       return;
     }
 
-    const fps = 2;
+    const fps = 8;
     setTimeout(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       world.step();

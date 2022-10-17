@@ -1,7 +1,7 @@
 {
-  "name": "www",
+  "name": "snake_game",
   "version": "1.0.0",
-  "description": "",
+  "description": "Snake Game with frontend in TypeScript and Code processing in Rust through WebAssembly",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --open --hot",
