@@ -19,6 +19,15 @@ enum KEYS {
   KEY_D = "KeyD",
 }
 
+function componentToHex(c: number) {
+  const hex: string = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r: number, g: number, b: number) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
 init().then((wasm) => {
   const CELL_SIZE = 30;
   const WORLD_WIDTH = 8;
@@ -131,7 +140,9 @@ init().then((wasm) => {
         const col = cellIdx % worldWidth;
         const row = Math.floor(cellIdx / worldWidth);
 
-        ctx.fillStyle = i === 0 ? "#7878DB" : "#000";
+        const colorNumber = (i - 1) * 3;
+        ctx.fillStyle =
+          i === 0 ? "#7878DB" : rgbToHex(colorNumber, colorNumber, colorNumber);
         // provide four positions a,b,c,d for the rectangle
         ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       });
