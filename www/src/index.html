@@ -17,10 +17,66 @@
         display: flex;
         flex-direction: column;
       }
+      .game-panel {
+        margin-bottom: 20px;
+      }
+      .flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .label {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+      #game-control-btn {
+        width: 80%;
+        margin-top: 8px;
+        padding: 0.6rem 0px;
+        border-radius: 50px 50px 50px 50px;
+        box-shadow: magenta 0px 0px 1px 2px;
+        border: magenta;
+        outline: none;
+        color: white;
+        background-color: black;
+        font-size: medium;
+        transform: scale(100%);
+        transition: transform ease 100ms;
+      }
+      #game-control-btn:hover {
+        transition: all ease 0.2s;
+        transform: scale(105%);
+        box-shadow: magenta 0px 0px 8px 4px;
+      }
+      #game-control-btn:active {
+        transition: all ease 0.2s;
+        transform: scale(98%);
+        box-shadow: magenta 0px 0px 8px 4px, inset magenta 0px 0px 2px 2px;
+      }
+
+      .playing {
+        transition: all ease 0.2s;
+        transform: scale(95%) !important;
+        box-shadow: inset magenta 0px 0px 2px 4px, #fff01f 0px 0px 2px 4px,
+          #39ff14 0px 0px 4px 8px !important;
+      }
     </style>
   </head>
   <body>
     <div class="content-wrapper">
+      <div class="game-panel">
+        <div class="flex">
+          <div class="label">Status:</div>
+          <div id="game-status">None</div>
+        </div>
+        <div class="flex">
+          <div class="label">Points:</div>
+          <div id="game-points"></div>
+        </div>
+        <div class="flex">
+          <button id="game-control-btn">Play</button>
+        </div>
+      </div>
       <canvas id="snake-canvas"></canvas>
     </div>
     <script src="./bootstrap.js"></script>

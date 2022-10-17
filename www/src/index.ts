@@ -1,5 +1,5 @@
-import init, { World, Direction } from "snake-game";
-
+import init, { World, Direction, GameStatus } from "snake-game";
+import { rnd } from "../utils/rnd";
 // wasm.greet("Rudra") can't work because wasm functions don't take a string as an argument they can
 // only work with numbers and pointers to memory
 
@@ -21,19 +21,40 @@ enum KEYS {
 
 init().then((wasm) => {
   const CELL_SIZE = 30;
-  const WORLD_WIDTH = 8;
+  const WORLD_WIDTH = 4;
 
   const snakeSpawnDirection = Direction.Right;
-  const snakeSpawnIdx = Date.now() % (WORLD_WIDTH * WORLD_WIDTH);
+  const snakeSpawnIdx = rnd(WORLD_WIDTH * WORLD_WIDTH);
 
   const world = World.new(WORLD_WIDTH, snakeSpawnIdx, snakeSpawnDirection);
   const worldWidth = world.width();
 
+  const points = <HTMLDivElement>document.getElementById("game-points");
+  const gameStatus = <HTMLDivElement>document.getElementById("game-status");
+  const gameControlBtn = <HTMLButtonElement>(
+    document.getElementById("game-control-btn")
+  );
   const canvas = <HTMLCanvasElement>document.getElementById("snake-canvas");
   const ctx = canvas.getContext("2d");
 
   canvas.width = worldWidth * CELL_SIZE;
   canvas.height = worldWidth * CELL_SIZE;
+
+  gameControlBtn.addEventListener("click", () => {
+    const status = world.game_status();
+    switch (status) {
+      case GameStatus.Played:
+      case GameStatus.Lost:
+      case GameStatus.Won:
+        location.reload();
+        break;
+      default:
+        gameControlBtn.textContent = "Pause";
+        gameControlBtn.classList.add("playing");
+        world.start_game();
+        play();
+    }
+  });
 
   document.addEventListener("keydown", (e) => {
     switch (e.code) {
@@ -54,7 +75,6 @@ init().then((wasm) => {
         world.update_snake_direction(Direction.Right);
         break;
       default:
-        console.log("INVALID KEY");
         break;
     }
   });
@@ -79,6 +99,20 @@ init().then((wasm) => {
     ctx.stroke();
   }
 
+  function drawReward() {
+    const rewardIdx = world.reward_cell();
+    const col = rewardIdx % worldWidth;
+    const row = Math.floor(rewardIdx / worldWidth);
+
+    ctx.beginPath();
+    ctx.fillStyle = "#f00";
+
+    // provide four positions a,b,c,d for the rectangle
+    ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+
+    ctx.stroke();
+  }
+
   function drawSnake() {
     const snakeCellPtr = world.snake_cells();
     const snakeLen = world.snake_length();
@@ -91,34 +125,49 @@ init().then((wasm) => {
 
     ctx.beginPath();
 
-    snakeCells.forEach((cellIdx, i) => {
-      const col = cellIdx % worldWidth;
-      const row = Math.floor(cellIdx / worldWidth);
+    snakeCells
+      .filter((cellIdx, i) => !(i > 0 && cellIdx == snakeCells[0]))
+      .forEach((cellIdx, i) => {
+        const col = cellIdx % worldWidth;
+        const row = Math.floor(cellIdx / worldWidth);
 
-      ctx.fillStyle = i === 0 ? "#7878DB" : "#000";
-      // provide four positions a,b,c,d for the rectangle
-      ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-    });
+        ctx.fillStyle = i === 0 ? "#7878DB" : "#000";
+        // provide four positions a,b,c,d for the rectangle
+        ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      });
 
     ctx.stroke();
+  }
+
+  function drawGameStatus() {
+    gameStatus.textContent = world.game_status_text();
+    points.textContent = world.points().toString();
   }
 
   function paint() {
     drawWorld();
     drawSnake();
+    drawReward();
+    drawGameStatus();
   }
 
-  function update() {
-    const fps = 5;
+  function play() {
+    const status = world.game_status();
+    if (status === GameStatus.Won || status === GameStatus.Lost) {
+      gameControlBtn.classList.remove("playing");
+      gameControlBtn.textContent = "Restart";
+      return;
+    }
+
+    const fps = 2;
     setTimeout(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       world.step();
       paint();
       // requesting the update function before next animation frame and the repaint to be smooth
-      requestAnimationFrame(update);
+      requestAnimationFrame(play);
     }, 1000 / fps);
   }
 
   paint();
-  update();
 });
