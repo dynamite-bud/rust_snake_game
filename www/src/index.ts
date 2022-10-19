@@ -28,6 +28,9 @@ function rgbToHex(r: number, g: number, b: number) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
+const fps = (points: number) =>
+  points >= 10 ? 6 : points >= 18 ? 7 : points >= 25 ? 8 : points >= 35 ? 9 : 5;
+
 const commandStack: Array<Direction> = [];
 
 init().then((wasm) => {
@@ -180,7 +183,6 @@ init().then((wasm) => {
       return;
     }
 
-    const fps = 8;
     setTimeout(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -198,7 +200,7 @@ init().then((wasm) => {
 
       // requesting the update function before next animation frame and the repaint to be smooth
       requestAnimationFrame(play);
-    }, 1000 / fps);
+    }, 1000 / fps(world.points()));
   }
 
   paint();
