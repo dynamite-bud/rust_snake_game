@@ -28,8 +28,10 @@ function rgbToHex(r: number, g: number, b: number) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
+const commandStack: Array<Direction> = [];
+
 init().then((wasm) => {
-  const CELL_SIZE = 30;
+  const CELL_SIZE = 40;
   const WORLD_WIDTH = 8;
 
   const snakeSpawnDirection = Direction.Right;
@@ -65,23 +67,31 @@ init().then((wasm) => {
     }
   });
 
+  function checkAndPushDirection(currentDirection: Direction) {
+    if (commandStack.length > 0) {
+      const lastDirection = commandStack[commandStack.length - 1];
+      if (lastDirection === currentDirection) return;
+    }
+    commandStack.push(currentDirection);
+  }
+
   document.addEventListener("keydown", (e) => {
     switch (e.code) {
       case KEYS.ARROW_UP:
       case KEYS.KEY_W:
-        world.update_snake_direction(Direction.Up);
+        checkAndPushDirection(Direction.Up);
         break;
       case KEYS.ARROW_DOWN:
       case KEYS.KEY_S:
-        world.update_snake_direction(Direction.Down);
+        checkAndPushDirection(Direction.Down);
         break;
       case KEYS.ARROW_LEFT:
       case KEYS.KEY_A:
-        world.update_snake_direction(Direction.Left);
+        checkAndPushDirection(Direction.Left);
         break;
       case KEYS.ARROW_RIGHT:
       case KEYS.KEY_D:
-        world.update_snake_direction(Direction.Right);
+        checkAndPushDirection(Direction.Right);
         break;
       default:
         break;
@@ -173,8 +183,19 @@ init().then((wasm) => {
     const fps = 8;
     setTimeout(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const command = commandStack.shift();
+      if (
+        command === Direction.Up ||
+        command === Direction.Down ||
+        command === Direction.Left ||
+        command === Direction.Right
+      ) {
+        world.update_snake_direction(command);
+      }
       world.step();
       paint();
+
       // requesting the update function before next animation frame and the repaint to be smooth
       requestAnimationFrame(play);
     }, 1000 / fps);

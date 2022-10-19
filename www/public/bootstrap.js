@@ -15,7 +15,7 @@
   \**************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("__webpack_require__.e(/*! import() */ \"src_index_ts\").then(__webpack_require__.bind(__webpack_require__, /*! ./index */ \"./src/index.ts\")).catch((err) =>\r\n  console.error(\"Error importing `index.js`:\", err)\r\n);\r\n\n\n//# sourceURL=webpack://snake_game/./src/bootstrap.js?");
+eval("__webpack_require__.e(/*! import() */ \"src_index_ts\").then(__webpack_require__.bind(__webpack_require__, /*! ./index */ \"./src/index.ts\")).catch((err) =>\n  console.error(\"Error importing `index.js`:\", err)\n);\n\n\n//# sourceURL=webpack://snake_game/./src/bootstrap.js?");
 
 /***/ })
 
